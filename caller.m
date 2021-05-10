@@ -44,6 +44,7 @@ function [fun, pth] = caller ()
 % 24-Mar-2021 - First version.
 % 25-Mar-2021 - Modification: the function exhamines the call stack until it finds a non-empty
 %                             state.
+% 10-May-2021 - Bug fixed:    The function failed when it was called from an object's method.
 
 % Retrive the name of the function in the stack, skip the two first names 
 for n = 2 : -1 : 0
@@ -61,7 +62,12 @@ if isempty(St)
 else
   % The function has been invoked by another function
   fun = St(1).name;
-  pth = fileparts(which(fun));
+  t = find(fun == '.', 1, 'first');
+  if isempty(t)
+    pth = fileparts(which(fun));
+  else
+    pth = fileparts(which(fun(1:t-1)));
+  end
 end
 
 end

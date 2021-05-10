@@ -173,6 +173,8 @@ classdef snippetCGenerator < snippetGenerator
       %
       % 12-Mar-2021 - first version.
       % 15-Mar-2021 - Refactored.
+      % 10-May-2021 - Bugs fixed:     The method failed if a numerical dimension was provided.
+      %                               Control over the size of input arguments was baldy coded.
       
       [~, classId, cType, mexType, getfun] = snippet.checkVariableType(Arg.type, 'c');
       
@@ -212,7 +214,7 @@ classdef snippetCGenerator < snippetGenerator
             d = Arg.dims{n};
             if isnumeric(d)
               src = { ...
-                '  if($FUN(prhs[$POSITION]) == $DIM) {', ...
+                '  if($FUN(prhs[$POSITION]) != $DIM) {', ...                                            % *** BUG FIXED HERE ***
                 '    mexErrMsgIdAndTxt("MATLAB:snippet:rhs", "wrong input size ($POSITION)");', ...
                 '  }'};
               Cdr.code(src, { Alias{:}, {'$DIM', int2str(d)}, {'$FUN', fun{n}} });
@@ -223,8 +225,11 @@ classdef snippetCGenerator < snippetGenerator
           end
           
           % Generate the code to get the values
-          d = Arg.dims{1}.name;
-          if isnumeric(d), d = int2str(d) ; end
+          if isnumeric(Arg.dims{1})                                                                     % *** BUG FIXED HERE ***
+            d = int2str(Arg.dims{1}); 
+          else
+            d = Arg.dims{1}.name;
+          end
           src = {'  $TYPE (*$NAME)[$DIM] = ($TYPE (*)[$DIM]) $GETFUN(prhs[$POSITION]);'};
           Cdr.code(src, { Alias{:}, {'$DIM', d} });
           

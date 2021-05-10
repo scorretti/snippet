@@ -61,7 +61,7 @@ setLink(this, linkedInputArg)
       <x>488</x>
       <y>24</y>
       <w>416</w>
-      <h>600</h>
+      <h>552</h>
     </coordinates>
     <panel_attributes>snippet
 --
@@ -81,6 +81,7 @@ mexPath
 this = snippet(src, opt)
 explicit(this, tf)
 list(this)
+io(this)
 edit(this)
 compileMex(this)
 reset(this)

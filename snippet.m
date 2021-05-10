@@ -5,15 +5,10 @@ classdef snippet < handle
   % -----------
   % This class handle the generation of an "encapsulated" source C++ code, as well as the compilation
   % and execution of the snippet.
-  % At present time, only C++ snippets are implemented, but C and Fortran are foreseen in future
+  % At present time, only C and C++ snippets are implemented, but C and Fortran are foreseen in future
   % versions.
   %
   %
-  % Input:
-  % *
-  %
-  % Output:
-  % *
   %
   % Notes:
   %
@@ -547,6 +542,99 @@ classdef snippet < handle
         tf = true;
       else
         tf = false;
+      end
+    end
+    function io(this)
+      % io                          Display the input/output arguments
+      %
+      % Description:
+      % -----------
+      % This method displays in the console the list of input/output arguments (for debug purpose only). 
+      %
+      %
+      % Input:
+      % - this                      Snippet
+      %
+      % Output:
+      % *
+      %
+      % Notes:
+      %
+      % Exemple:
+      %
+      % See also:
+      %
+      % References:
+      %
+      % Validation:
+      %
+      % 10-May-2021 - first version.
+      
+      fprintf('Input arguments:\n');
+      fprintf('---------------\n');
+      if numel(this.InputArg) == 0
+        fprintf('(none)\n');
+      end
+      for n = 1 : numel(this.InputArg)
+        printArgument(this.InputArg(n));  
+      end
+      fprintf('\n');
+      
+      fprintf('Output arguments:\n');
+      fprintf('----------------\n');
+      if numel(this.OutputArg) == 0
+        fprintf('(none)\n');
+      end
+      for n = 1 : numel(this.OutputArg)
+        printArgument(this.OutputArg(n));  
+      end
+      fprintf('\n');
+      
+      function printArgument(Arg)
+      % --------------------------->| description -------------------|------------------------------------------->| remarks
+      % printArgument
+      %
+      % Description:
+      % -----------
+      %
+      % Input:
+      % - Arg
+      %
+      % Output:
+      % *
+      %
+      % Notes:
+      %
+      % Exemple:
+      %
+      % See also:
+      %
+      % References:
+      %
+      % Validation:
+      %
+      % 10-May-2021 - first version.
+
+% --------------------------->| description -------------------|------------------------------------------->| remarks
+
+        fprintf('%16s ', Arg.name);
+        if isempty(Arg.type)
+          fprintf('%10s ', '<undefined>');
+        else
+          fprintf('%10s ', ['<' Arg.type '>']);
+        end
+        
+        fprintf('(');
+        for d = 1 : numel(Arg.dims)
+          dim = Arg.dims{d};
+          if isnumeric(dim)
+            fprintf('%i', dim);
+          else
+            fprintf('%s', dim.name);
+          end
+          if d < numel(Arg.dims) , fprintf(', ') ; end
+        end
+        fprintf(')\n');
       end
     end
   end
